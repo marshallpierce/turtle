@@ -44,7 +44,7 @@ pub mod color;
 pub mod event;
 pub mod rand;
 
-pub use turtle::{Turtle, Point, Distance, Angle};
+pub use turtle::{Turtle, Point, Distance, Angle, Drawing};
 pub use speed::{Speed};
 pub use color::{Color};
 pub use event::Event;

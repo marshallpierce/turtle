@@ -12,9 +12,9 @@ use piston_window::math;
 
 use renderer::{Renderer, DrawingCommand};
 use animation::{Animation, MoveAnimation, RotateAnimation, AnimationStatus};
-use state::{TurtleState, DrawingState, Path};
+use state::{TurtleState, Path};
 use radians::{self, Radians};
-use {Point, Distance, Event};
+use {Point, Distance, Event, Drawing};
 
 use self::DrawingCommand::*;
 
@@ -27,7 +27,7 @@ pub type MutableRef<'a, T> = RwLockWriteGuard<'a, T>;
 /// A structure that provides read-only access to shared state
 pub struct ReadOnly {
     turtle: Shared<TurtleState>,
-    drawing: Shared<DrawingState>,
+    drawing: Shared<Drawing>,
     /// A temporary path for use during animations
     temporary_path: Shared<Option<Path>>,
 }
@@ -37,7 +37,7 @@ impl ReadOnly {
         self.turtle.read().expect("bug: Lock was poisoned")
     }
 
-    pub fn drawing(&self) -> ReadOnlyRef<DrawingState> {
+    pub fn drawing(&self) -> ReadOnlyRef<Drawing> {
         self.drawing.read().expect("bug: Lock was poisoned")
     }
 
@@ -54,7 +54,7 @@ pub struct TurtleWindow {
     events_channel: mpsc::Receiver<Event>,
 
     turtle: Shared<TurtleState>,
-    drawing: Shared<DrawingState>,
+    drawing: Shared<Drawing>,
     /// A temporary path for use during animations
     temporary_path: Shared<Option<Path>>,
 }
@@ -69,7 +69,7 @@ impl TurtleWindow {
             drawing_channel: drawing_tx,
             events_channel: events_rx,
             turtle: Arc::new(RwLock::new(TurtleState::default())),
-            drawing: Arc::new(RwLock::new(DrawingState::default())),
+            drawing: Arc::new(RwLock::new(Drawing::default())),
             temporary_path: Arc::new(RwLock::new(None)),
         };
 
@@ -104,12 +104,12 @@ impl TurtleWindow {
     }
 
     /// Provides read-only access to the drawing
-    pub fn drawing(&self) -> ReadOnlyRef<DrawingState> {
+    pub fn drawing(&self) -> ReadOnlyRef<Drawing> {
         self.drawing.read().expect("bug: Lock was poisoned")
     }
 
     /// Provides mutable access to the drawing
-    pub fn drawing_mut(&mut self) -> MutableRef<DrawingState> {
+    pub fn drawing_mut(&mut self) -> MutableRef<Drawing> {
         self.drawing.write().expect("bug: Lock was poisoned")
     }
 

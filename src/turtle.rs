@@ -1,10 +1,12 @@
 use std::thread;
 use std::time::Duration;
 
+use piston_window::math;
+
 use radians::{self, Radians};
 use turtle_window::TurtleWindow;
 use event::MouseButton;
-use {Speed, Color, Event};
+use {Speed, Color, Event, color};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum AngleUnit {
@@ -53,6 +55,60 @@ pub type Distance = f64;
 /// degrees or radians. See the [`use_degrees()`](struct.Turtle.html#method.use_degrees) or
 /// [`use_radians()`](struct.Turtle.html#method.use_radians) methods for more information.
 pub type Angle = f64;
+
+/// Represents the drawing that the turtle is creating
+#[derive(Debug, Clone)]
+pub struct Drawing {
+    title: String,
+    background: Color,
+    width: u32,
+    height: u32,
+    relative_center: [f64; 2],
+}
+
+impl Default for Drawing {
+    fn default() -> Self {
+        Self {
+            title: "Turtle".to_string(),
+            background: color::WHITE,
+            width: 800,
+            height: 600,
+            relative_center: [0.5, 0.5],
+        }
+    }
+}
+
+impl Drawing {
+    //TODO: Documentation
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
+    //TODO: Documentation
+    pub fn background_color(&self) -> Color {
+        self.background
+    }
+
+    //TODO: Documentation
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+
+    //TODO: Documentation
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+
+    //TODO: Documentation
+    pub fn size(&self) -> (u32, u32) {
+        (self.width, self.height)
+    }
+
+    //TODO: Documentation
+    pub fn center(&self) -> [f64; 2] {
+        math::mul(self.relative_center, [self.width as f64, self.height as f64])
+    }
+}
 
 /// A turtle with a pen attached to its tail
 ///
@@ -746,6 +802,7 @@ impl Turtle {
     ///
     /// See the [`color` module](color/index.html) for more information about colors.
     pub fn background_color(&self) -> Color {
+        //TODO: Delete this method in favor of the method on drawing
         self.window.drawing().background
     }
 

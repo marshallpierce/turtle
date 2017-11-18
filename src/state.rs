@@ -53,16 +53,3 @@ impl Default for TurtleState {
         }
     }
 }
-
-#[derive(Debug, Clone)]
-pub struct DrawingState {
-    pub background: Color,
-}
-
-impl Default for DrawingState {
-    fn default() -> Self {
-        Self {
-            background: color::WHITE,
-        }
-    }
-}

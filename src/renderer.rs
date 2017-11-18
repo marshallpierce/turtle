@@ -18,9 +18,9 @@ use piston_window::{
 
 use turtle_window::ReadOnly;
 use extensions::ConvertScreenCoordinates;
-use state::{Path, Polygon, Pen, TurtleState, DrawingState};
+use state::{Path, Polygon, Pen, TurtleState};
 use event::from_piston_event;
-use {Point, Event, Color, color};
+use {Point, Event, Color, Drawing as DrawingState, color};
 
 pub enum DrawingCommand {
     /// When a path is finished being animated, it needs to be persisted in the renderer
@@ -68,9 +68,13 @@ impl Renderer {
         events_tx: mpsc::Sender<Event>,
         state: ReadOnly,
     ) {
-        let mut window: PistonWindow = WindowSettings::new(
-            "Turtle", [800, 600]
-        ).exit_on_esc(true).build().unwrap();
+        let mut window: PistonWindow = {
+            let drawing = state.drawing();
+            WindowSettings::new(
+                drawing.title(),
+                drawing.size(),
+            ).exit_on_esc(true).build().unwrap()
+        };
 
         let mut center = [0.0, 0.0];
 
@@ -162,7 +166,7 @@ impl Renderer {
     /// The main rendering route. Dispatches to other functions as needed.
     fn render(&self, c: context::Context, g: &mut G2d, center: Point,
         drawing: &DrawingState, temporary_path: &Option<Path>, turtle: &TurtleState) {
-        let background = drawing.background;
+        let background = drawing.background_color();
         clear(background.into(), g);
 
         for drawing in &self.drawings {
